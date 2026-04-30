@@ -1,7 +1,6 @@
 all:
 	gcc src/main.c -o noxide
 
-test:
+install:
 	make
-	./noxide add /caca
-	./noxide read
+	sudo cp ./noxide /usr/local/bin/

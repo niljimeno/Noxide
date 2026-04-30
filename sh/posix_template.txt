@@ -5,6 +5,9 @@ __noxide_hook() {
 PS1="${PS1}\$(__noxide_hook)"
 
 z() {
-    # result="$(zoxide query --exclude "$(pwd)" -- "$@")" && cd "$result"
     result="$(noxide find "$@")" && cd "$result"
+}
+
+zi() {
+    result="$(noxide ifind "$@")" && cd "$result"
 }
