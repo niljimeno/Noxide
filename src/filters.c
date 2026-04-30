@@ -11,4 +11,3 @@ int filterEqual(char* a, char* b) {
 int filterIn(char* data, char* entry) {
     return (!(strstr(data, entry) == NULL));
 }
-

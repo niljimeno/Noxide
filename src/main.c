@@ -19,16 +19,25 @@ void addToDb(char *entry) {
 }
 
 void addPathToDb(char *entry) {
-    char buffer[255];
+    char buffer[strlen(entry)+1];
 
-    for (int i = 0; i < strlen(entry); ++i) {
+    for (int i = 0; i <= strlen(entry); ++i) {
         if (entry[i] == '/') {
+            buffer[i] = '/';
             buffer[i+1] = '\0';
             addToDb(buffer);
         }
 
+        else if (entry[i] == '\0') {
+            buffer[i] = '/';
+            buffer[i+1] = '\0';
+            break;
+        }
+
         buffer[i] = entry[i];
     }
+
+    addToDb(buffer);
 }
 
 void findLocation(char *entry) {

@@ -1,3 +1,6 @@
+#include <dirent.h>
+#include <errno.h>
+
 char *DB_PATH = "/home/nil/.config/db.no";
 
 char *SCRIPT =  "__noxide_hook() {\n\tnoxide add \"$(pwd)\"\n}\n\n"
@@ -30,11 +33,13 @@ char *readFZF() {
     sprintf(command, "cat %s | fzf", DB_PATH);
 
     char *buffer = malloc(sizeof(char) * 255);
+    buffer[0] = '\0';
+
     FILE *fp = popen(command, "r");
 
     if (fp == NULL) {
         perror("popen failed");
-        return NULL;
+        return "";
     }
 
     fgets(buffer, sizeof(char) * 255, fp);
@@ -43,21 +48,55 @@ char *readFZF() {
     return buffer;
 }
 
+int getFileSize(FILE *file) {
+    fseek(file, 0L, SEEK_END);
+    return ftell(file);
+}
+
+int directoryExists(char *directory) {
+    DIR* dir = opendir(directory);
+    int result = dir ? 1 : 0;
+    closedir(dir);
+    return result;
+}
+
 void removeOldEntries() {
     FILE *file = fopen(DB_PATH, "r");
     if (file == NULL) {
         return;
     }
 
-    char *line = malloc(255 * sizeof(char));
-
-    while (fgets(line, 255, file)) {
-        if (access(line, F_OK) != 0) {
-            remove(line);
-        }
-    }
+    int fileSize = getFileSize(file);
 
     fclose(file);
+    file = fopen(DB_PATH, "r");
+
+    char *line = malloc(255 * sizeof(char));
+    char *newFile = malloc(fileSize);
+    int newFileIndex = 0;
+
+    while (fgets(line, 255, file)) {
+        if (!directoryExists(trimNewline(line))) {
+            continue;
+        }
+
+        for (int i = 0; i < strlen(line); ++i) {
+            newFile[newFileIndex] = line[i];
+            newFileIndex++;
+        }
+
+        newFile[newFileIndex] = '\n';
+        newFileIndex++;
+    }
+
+    newFile[newFileIndex - (newFileIndex == 0 ? 0 : 1)] = '\0';
+    fclose(file);
+    remove(DB_PATH);
+
+    file = fopen(DB_PATH, "w");
+    fprintf(file, newFile);
+    fclose(file);
+
     return;
 }
 
