@@ -1,0 +1,10 @@
+__noxide_hook() {
+    noxide add "$(pwd)"
+}
+
+PS1="${PS1}\$(__noxide_hook)"
+
+z() {
+    # result="$(zoxide query --exclude "$(pwd)" -- "$@")" && cd "$result"
+    result="$(noxide find "$@")" && cd "$result"
+}
