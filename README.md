@@ -14,9 +14,10 @@ cd /var/lib/mpd
 z mpd
 ```
 
-If multiple possibilities exist,
-it warps you to the oldest one.
-To remove old memories run `noxide clean`.
+Unlike Zoxide, Noxide is retarded.
+If multiple matches exist,
+it chooses the oldest one, always.
+To remove old entries run `noxide clean`.
 
 
 
