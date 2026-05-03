@@ -14,9 +14,9 @@ char *getMatch(int (*filter)(char*, char*), char *entry) {
         return NULL;
     }
 
-    char *line = malloc(255 * sizeof(char));
+    char *line = malloc(PATH_MAX * sizeof(char));
 
-    while (fgets(line, 255, file)) {
+    while (fgets(line, PATH_MAX, file)) {
         line = trimNewline(line);
         if (filter(line, entry)) {
             fclose(file);
@@ -29,10 +29,10 @@ char *getMatch(int (*filter)(char*, char*), char *entry) {
 }
 
 char *readFZF() {
-    char command[255];
+    char command[PATH_MAX];
     sprintf(command, "cat %s | fzf", DB_PATH);
 
-    char *buffer = malloc(sizeof(char) * 255);
+    char *buffer = malloc(sizeof(char) * PATH_MAX);
     buffer[0] = '\0';
 
     FILE *fp = popen(command, "r");
@@ -42,7 +42,7 @@ char *readFZF() {
         return "";
     }
 
-    fgets(buffer, sizeof(char) * 255, fp);
+    fgets(buffer, sizeof(char) * PATH_MAX, fp);
 
     pclose(fp);
     return buffer;
@@ -71,11 +71,11 @@ void removeOldEntries() {
     fclose(file);
     file = fopen(DB_PATH, "r");
 
-    char *line = malloc(255 * sizeof(char));
+    char *line = malloc(PATH_MAX * sizeof(char));
     char *newFile = malloc(fileSize);
     int newFileIndex = 0;
 
-    while (fgets(line, 255, file)) {
+    while (fgets(line, PATH_MAX, file)) {
         if (!directoryExists(trimNewline(line))) {
             continue;
         }
@@ -89,7 +89,7 @@ void removeOldEntries() {
         newFileIndex++;
     }
 
-    newFile[newFileIndex - (newFileIndex == 0 ? 0 : 1)] = '\0';
+    newFile[newFileIndex] = '\0';
     fclose(file);
     remove(DB_PATH);
 
