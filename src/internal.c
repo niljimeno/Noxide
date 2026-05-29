@@ -32,7 +32,7 @@ char *readFZF() {
     char command[PATH_MAX];
     sprintf(command, "cat %s | fzf", DB_PATH);
 
-    char *buffer = malloc(sizeof(char) * PATH_MAX);
+    char *buffer = malloc(PATH_MAX * sizeof(char));
     buffer[0] = '\0';
 
     FILE *fp = popen(command, "r");
@@ -50,7 +50,7 @@ char *readFZF() {
 
 int getFileSize(FILE *file) {
     fseek(file, 0L, SEEK_END);
-    return ftell(file);
+    return ftell(file) + 1;
 }
 
 int directoryExists(char *directory) {
