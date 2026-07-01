@@ -44,13 +44,20 @@ void addPathToDb(char *entry) {
 void findLocation(char *entry) {
     removeOldEntries();
 
-    char *match = getMatch(filterIn, entry);
-    if (match == NULL) {
-        printf(".");
+    char *match;
+    match = getMatch(filterEqualName, entry);
+    if (match != NULL) {
+        printf(match);
         return;
     }
 
-    printf(match);
+    match = getMatch(filterIn, entry);
+    if (match != NULL) {
+        printf(match);
+        return;
+    }
+
+    printf(".");
 }
 
 void findInteractiveLocation(char *entry) {
